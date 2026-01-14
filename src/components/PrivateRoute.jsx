@@ -1,17 +1,21 @@
-import toast from "react-hot-toast";
-import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { Spin } from "antd";
 
 function PrivateRoute({ children }) {
-  const { isAuthenticated, user } = useSelector((state) => state.auth);
-  console.info("🚀 ~ PrivateRoute ~ user:", user);
-  console.info("🚀 ~ PrivateRoute ~ isAuthenticated:", isAuthenticated);
-  if (!isAuthenticated) {
-    toast.error("User not authenticated");
-    return <Navigate to="login"></Navigate>
-  } else {
-    return children;
+  const { status } = useSelector((state) => state.auth);
+
+
+  // ⏳ wait for auth check
+  if (status === "loading") {
+    return <Spin fullscreen></Spin>;
   }
+
+  if (status === "unauthenticated") {
+    return <Navigate to="/login" replace />;
+  }
+
+  return children;
 }
 
 export default PrivateRoute;

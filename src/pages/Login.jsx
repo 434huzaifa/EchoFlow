@@ -8,8 +8,8 @@ import { useSelector } from "react-redux";
 function Login() {
   const [loginUser, { isLoading }] = useLoginUserMutation();
   const navigate = useNavigate();
-  const { isAuthenticated } = useSelector((state) => state.auth);
-  if (isAuthenticated) {
+  const { status } = useSelector((state) => state.auth);
+  if (status=="authenticated") {
     navigate("/");
   }
   const [form] = Form.useForm();

@@ -10,8 +10,8 @@ function Signup() {
   const [createUser, { isLoading }] = useCreateUserMutation();
   const navigate=useNavigate()
   const [isPasswordMatch, setIsPasswordMatch] = useState(true);
-  const { isAuthenticated } = useSelector((state) => state.auth);
-  if (isAuthenticated) {
+  const { status } = useSelector((state) => state.auth);
+  if (status=="authenticated") {
     navigate("/")
   }
   const [form] = Form.useForm();
