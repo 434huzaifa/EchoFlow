@@ -1,8 +1,9 @@
+import PostCard from "../components/PostCard";
 
-function Home(props) {
+function Home() {
     return (
         <div className="p-5">
-            Hey Home
+           <PostCard></PostCard>
         </div>
     );
 }

@@ -1,7 +1,7 @@
 import { Button, Card, Form, Input } from "antd";
 import { useNavigate } from "react-router-dom";
 
-function Login(props) {
+function Login() {
   const navigate = useNavigate();
   const [form] = Form.useForm();
   function onFinish(v) {
