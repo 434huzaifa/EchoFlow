@@ -1,8 +1,10 @@
 import { Button, Form, Input, Modal, Pagination } from "antd";
 import PostCard from "../components/PostCard";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 function Home() {
+  
   const [isModalOpen, setIsModalOpen] = useState(false);
   const showModal = () => {
     setIsModalOpen(true);
