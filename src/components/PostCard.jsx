@@ -1,24 +1,26 @@
 import { Avatar, Button, Card, Divider, Form, Input, Popover } from "antd";
 import { useState } from "react";
-import { BiDislike, BiEdit, BiLike, BiSolidComment } from "react-icons/bi";
+import {
+  BiComment,
+  BiDislike,
+  BiEdit,
+  BiLike,
+  BiSolidComment,
+} from "react-icons/bi";
 import { IoChevronDown } from "react-icons/io5";
 import { MdChevronRight, MdDelete, MdOutlineTurnRight } from "react-icons/md";
 import Comment from "./Comment";
 
 function PostCard() {
   const [form] = Form.useForm();
-  const [replyInput, setReplayState] = useState(false);
+  const [showComment, setShowComment] = useState(false);
   function onFinish(v) {
     console.info("🚀 ~ onFinish ~ v:", v);
   }
-  function popOverContent() {
-    return (
-      <>
-        <p>Huzaifa</p>
-        <p>saadhuzaifa2497@gmail.com</p>
-      </>
-    );
+  function changeShowCommentState() {
+    setShowComment(!showComment);
   }
+
   return (
     <Card>
       <p className="text-2xl font-bold">Title</p>
@@ -41,9 +43,16 @@ function PostCard() {
             <BiDislike className="hover:cursor-pointer hover:border-b" />
             {/* <BiSolidDislike /> */}
           </div>
-          <div className="flex gap-0.5 items-center justify-center text-lg hover:cursor-pointer">
+          <div
+            className="flex gap-0.5 items-center justify-center text-lg hover:cursor-pointer"
+            onClick={changeShowCommentState}
+          >
             <span>1</span>
-            <BiSolidComment className="hover:cursor-pointer hover:border-b" />
+            {showComment ? (
+              <BiSolidComment className="hover:cursor-pointer hover:border-b" />
+            ) : (
+              <BiComment className="hover:cursor-pointer hover:border-b" />
+            )}
           </div>
         </div>
         <div className="flex gap-4">
@@ -71,12 +80,15 @@ function PostCard() {
           </Button>
         </Form.Item>
       </Form>
-
-      <div className="flex flex-col gap-2">
-        {Array.from([1, 2]).map(() => (
-          <Comment></Comment>
-        ))}
-      </div>
+      {showComment ? (
+        <div className="flex flex-col gap-2">
+          {Array.from([1, 2]).map(() => (
+            <Comment></Comment>
+          ))}
+        </div>
+      ) : (
+        <></>
+      )}
     </Card>
   );
 }

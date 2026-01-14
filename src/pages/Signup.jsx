@@ -1,27 +1,41 @@
 import { Button, Card, Form, Input } from "antd";
 import { useNavigate } from "react-router-dom";
 
-function Login() {
+function Signup() {
   const navigate = useNavigate();
   const [form] = Form.useForm();
   function onFinish(v) {
     console.log(v);
-    navigate("home")
+    navigate("home");
   }
   return (
     <div className="h-screen w-screen flex justify-center items-center">
       <Card>
         <Form name="login" onFinish={onFinish} form={form} layout="vertical">
           <Form.Item
+            label="Name"
+            name="name"
+            rules={[{ required: true, message: "Please input your Name!" }]}
+          >
+            <Input placeholder="Enter your email"></Input>
+          </Form.Item>
+          <Form.Item
             label="Email"
             name="email"
-            rules={[{ required: true, message: "Please input your Email!" }]}
+            rules={[{ required: true, message: "Please input your email!" }]}
           >
             <Input placeholder="Enter your email"></Input>
           </Form.Item>
           <Form.Item
             label="Password"
-            name="pass"
+            name="pass1"
+            rules={[{ required: true, message: "Please input your password!" }]}
+          >
+            <Input.Password placeholder="Enter your Pass"></Input.Password>
+          </Form.Item>
+          <Form.Item
+            label="Password"
+            name="pass2"
             rules={[{ required: true, message: "Please input your password!" }]}
           >
             <Input.Password placeholder="Enter your Pass"></Input.Password>
@@ -37,4 +51,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default Signup;
