@@ -4,14 +4,14 @@ A modern, real-time comment system built with React, Redux Toolkit, and WebSocke
 
 ## Features
 
-- 🔐 **User Authentication**: Login and signup with email/password
-- 📝 **Create/Edit/Delete Posts**: Full CRUD operations for posts
-- 💬 **Nested Comments**: Add comments to posts with threaded replies
-- 👍 **Like/Dislike System**: Rate comments with like and dislike counts
-- ⚡ **Real-Time Updates**: WebSocket-powered instant updates across all users
-- 📱 **Responsive Design**: Mobile-friendly interface with Tailwind CSS and Ant Design
-- 🔄 **Lazy Loading**: Load comments on-demand when users click on posts
-- ∞ **Infinite Scroll**: Browse posts with pagination support
+- **User Authentication**: Login and signup with email/password
+- **Create/Edit/Delete Posts**: Full CRUD operations for posts
+- **Nested Comments**: Add comments to posts with threaded replies
+- **Like/Dislike System**: Rate comments with like and dislike counts
+- **Real-Time Updates**: WebSocket-powered instant updates across all users
+- **Responsive Design**: Mobile-friendly interface with Tailwind CSS and Ant Design
+- **Lazy Loading**: Load comments on-demand when users click on posts
+- **Infinite Scroll**: Browse posts with pagination support
 
 ## Tech Stack
 
