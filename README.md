@@ -2,6 +2,8 @@
 
 A modern, real-time comment system built with React, Redux Toolkit, and WebSocket technology. Users can create, edit, and delete posts with nested comments and replies, complete with like/dislike functionality.
 
+[Live Preview](https://echo-flow-beige.vercel.app/) - it might take some time because of free tire
+
 ## Features
 
 - **User Authentication**: Login and signup with email/password

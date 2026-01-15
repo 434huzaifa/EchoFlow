@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider } from "react-router";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import NotFound from "./pages/NotFound";
 import App from "./App";
 import { Provider } from "react-redux";
 import { PersistGate } from 'redux-persist/integration/react';
@@ -13,6 +14,7 @@ let router = createBrowserRouter([
   {
     path: "/",
     Component: App,
+    errorElement: <NotFound />,
     children: [
       {
         path: "/",
@@ -31,6 +33,10 @@ let router = createBrowserRouter([
         Component: Signup,
       },
     ],
+  },
+  {
+    path: "*",
+    element: <NotFound />,
   },
 ]);
 
