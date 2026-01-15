@@ -5,7 +5,6 @@ import { Spin } from "antd";
 function PrivateRoute({ children }) {
   const { status } = useSelector((state) => state.auth);
 
-
   if (status === "loading") {
     return <Spin fullscreen></Spin>;
   }

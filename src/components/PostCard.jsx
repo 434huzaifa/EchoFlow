@@ -1,13 +1,10 @@
 import {
-  Avatar,
   Button,
   Card,
   Divider,
   Form,
   Input,
   Popconfirm,
-  Popover,
-  Space,
   Spin,
 } from "antd";
 import { useState } from "react";
@@ -20,120 +17,133 @@ import {
   BiSolidDislike,
   BiSolidLike,
 } from "react-icons/bi";
-import { IoChevronDown } from "react-icons/io5";
-import { MdChevronRight, MdDelete, MdOutlineTurnRight } from "react-icons/md";
+import { MdChevronRight, MdDelete } from "react-icons/md";
 import Comment from "./Comment";
 import {
   useDeletePostMutation,
   useDislikePostMutation,
   useLikePostMutation,
 } from "../api/PostApi";
+import { useGetCommentsQuery } from "../socketApi/SocketCommentsApi";
 import toast from "react-hot-toast";
 import { extractErrorMessage } from "../utils/common";
 import { useSelector } from "react-redux";
+import { useCreateCommentMutation } from "../api/CommentApi";
 
-function PostCard({ post, setInitialValue,setIsModalOpen }) {
+function PostCard({ post, setInitialValue, setIsModalOpen }) {
   const [form] = Form.useForm();
   const [showComment, setShowComment] = useState(false);
   const { user } = useSelector((state) => state.auth);
+
+  const [createComment, { isLoading: isCommentLoading }] = useCreateCommentMutation();
   const [likePost, { isLoading: isLikeLoading }] = useLikePostMutation();
-  const [dislikePost, { isLoading: isDisLikeLoading }] =
-    useDislikePostMutation();
+  const [dislikePost, { isLoading: isDisLikeLoading }] = useDislikePostMutation();
   const [deletePost, { isLoading: isDeleteLoading }] = useDeletePostMutation();
-  function onFinish(v) {
-    console.info("🚀 ~ onFinish ~ v:", v);
-  }
-  function changeShowCommentState() {
-    setShowComment(!showComment);
+
+  // Fetch comments only when showComment is true
+  const {
+    data: comments = [],
+    isLoading: isCommentsLoading,
+    isFetching: isCommentsFetching,
+    refetch: refetchComments,
+  } = useGetCommentsQuery({ postId: post._id }, { skip: !showComment });
+
+  // Submit new comment
+  async function onCommentSubmit(values) {
+    if (!user) {
+      toast.error("Please login to comment");
+      return;
+    }
+    try {
+      await createComment({
+        text: values?.comment,
+        post: post?._id,
+      }).unwrap();
+      form.resetFields();
+      toast.success("Comment added successfully");
+    } catch (error) {
+      toast.error(extractErrorMessage(error));
+    }
   }
 
-  const handleLike = async (postId) => {
+  const toggleComments = () => setShowComment(!showComment);
+
+  const handleLike = async () => {
     try {
-      await likePost(postId).unwrap();
+      await likePost(post._id).unwrap();
       toast.success("Post liked");
     } catch (error) {
       toast.error(extractErrorMessage(error));
     }
   };
 
-  const handleDislike = async (postId) => {
+  const handleDislike = async () => {
     try {
-      await dislikePost(postId).unwrap();
-      toast.success("Post dislike");
+      await dislikePost(post._id).unwrap();
+      toast.success("Post disliked");
     } catch (error) {
       toast.error(extractErrorMessage(error));
     }
   };
-  const handleDelete = async (postId) => {
+
+  const handleDelete = async () => {
     try {
-      await deletePost(postId).unwrap();
-      toast.success("post deleted");
+      await deletePost(post._id).unwrap();
+      toast.success("Post deleted");
     } catch (error) {
       toast.error(extractErrorMessage(error));
     }
   };
+
   const handleEdit = () => {
-    setInitialValue({ title: post?.title, body: post?.body, postId: post?._id });
-    setIsModalOpen(true)
+    setInitialValue({
+      title: post?.title,
+      body: post?.body,
+      postId: post?._id,
+    });
+    setIsModalOpen(true);
   };
 
-  const likeIcon = (() => {
-    for (const objectId of post?.likes || []) {
-      if (objectId == user?.id) {
-        return BiSolidLike;
-      } else {
-        return BiLike;
-      }
-    }
-    return BiLike;
-  })();
-
-  const dislikeIcon = (() => {
-    for (const objectId of post?.dislikes || []) {
-      if (objectId == user?.id) {
-        return BiSolidDislike;
-      } else {
-        return BiDislike;
-      }
-    }
-    return BiDislike;
-  })();
+  // Check if user liked/disliked
+  const userLiked = post?.likes?.includes(user?.id);
+  const userDisliked = post?.dislikes?.includes(user?.id);
+  const isAuthor = post?.author?._id === user?.id;
 
   return (
     <Card>
       <p className="text-2xl font-bold">{post.title}</p>
       <p className="text-xl">{post.body}</p>
       <p className="text-xs text-gray-500">
-        {post?.author?._id == user?.id ? "By Me" : `By ${post.author.name}`}
+        {isAuthor ? "By Me" : `By ${post.author.name}`}
       </p>
-      <Divider></Divider>
+      
+      <Divider />
+      
       <div className="flex justify-between text-xl">
         <div className="flex gap-4">
           <Spin spinning={isLikeLoading}>
             <div
-              className="flex gap-0.5 items-center justify-center  hover:cursor-pointer"
-              onClick={() => {
-                handleLike(post._id);
-              }}
+              className="flex gap-0.5 items-center justify-center hover:cursor-pointer"
+              onClick={handleLike}
             >
               <span>{post.likesCount}</span>
-              {likeIcon()}
+              {userLiked ? <BiSolidLike /> : <BiLike />}
             </div>
           </Spin>
+          
           <Spin spinning={isDisLikeLoading}>
             <div
-              className="flex gap-0.5 items-center justify-center  hover:cursor-pointer"
-              onClick={() => {
-                handleDislike(post._id);
-              }}
+              className="flex gap-0.5 items-center justify-center hover:cursor-pointer"
+              onClick={handleDislike}
             >
               <span>{post.dislikesCount}</span>
-              {dislikeIcon()}
+              {userDisliked ? <BiSolidDislike /> : <BiDislike />}
             </div>
           </Spin>
+          
           <div
             className="flex gap-0.5 items-center justify-center text-lg hover:cursor-pointer"
-            onClick={changeShowCommentState}
+            onClick={toggleComments}
           >
             <span>{post?.commentsCount}</span>
             {showComment ? (
@@ -143,55 +153,70 @@ function PostCard({ post, setInitialValue,setIsModalOpen }) {
             )}
           </div>
         </div>
-        <div className="flex gap-4">
-          {post?.author?._id == user?.id && (
-            <>
-              <BiEdit
-                className="hover:cursor-pointer hover:border-b"
-                onClick={handleEdit}
-              />
-              <Popconfirm
-                title="Delete the Post"
-                description="Are you sure to delete this?"
-                onConfirm={() => {
-                  handleDelete(post._id);
-                }}
-                okButtonProps={{ loading: isDeleteLoading }}
-              >
-                <MdDelete className="hover:cursor-pointer hover:border-b" />
-              </Popconfirm>
-            </>
-          )}
-        </div>
+        
+        {/* Author action */}
+        {isAuthor && (
+          <div className="flex gap-4">
+            <BiEdit
+              className="hover:cursor-pointer hover:border-b"
+              onClick={handleEdit}
+            />
+            <Popconfirm
+              title="Delete the Post"
+              description="Are you sure to delete this?"
+              onConfirm={handleDelete}
+              okButtonProps={{ loading: isDeleteLoading }}
+            >
+              <MdDelete className="hover:cursor-pointer hover:border-b" />
+            </Popconfirm>
+          </div>
+        )}
       </div>
-      <Divider></Divider>
-      <Form
-        name="comment_form"
-        onFinish={onFinish}
-        form={form}
-        className="flex flex-row gap-3"
-      >
-        <Form.Item
-          name="comment"
-          rules={[{ required: true, message: "Comment can't be empty" }]}
-          className="flex-1"
+      
+      <Divider />
+      
+      {/* Comment Input hidden if already commented*/}
+      {!post?.hasMyComment && (
+        <Form
+          name="comment_form"
+          onFinish={onCommentSubmit}
+          form={form}
+          className="flex flex-row gap-3"
         >
-          <Input placeholder="Write your thoughts......"></Input>
-        </Form.Item>
-        <Form.Item>
-          <Button type="primary" htmlType="submit">
-            <MdChevronRight className="text-2xl" />
-          </Button>
-        </Form.Item>
-      </Form>
-      {showComment ? (
-        <div className="flex flex-col gap-2">
-          {Array.from([1, 2]).map(() => (
-            <Comment></Comment>
-          ))}
-        </div>
-      ) : (
-        <></>
+          <Form.Item
+            name="comment"
+            rules={[{ required: true, message: "Comment can't be empty" }]}
+            className="flex-1"
+          >
+            <Input placeholder="Write your thoughts......" />
+          </Form.Item>
+          <Form.Item>
+            <Button type="primary" htmlType="submit">
+              <MdChevronRight className="text-2xl" />
+            </Button>
+          </Form.Item>
+        </Form>
+      )}
+
+      {showComment && (
+        <Spin spinning={isCommentsLoading || isCommentsFetching}>
+          <div className="flex flex-col gap-2 mt-4">
+            {comments.length > 0 ? (
+              comments.map((comment) => (
+                <Comment
+                  key={comment._id}
+                  comment={comment}
+                  postId={post._id}
+                  refetchComments={refetchComments}
+                />
+              ))
+            ) : (
+              <p className="text-gray-500 text-center py-4">
+                No comments yet. Be the first to comment!
+              </p>
+            )}
+          </div>
+        </Spin>
       )}
     </Card>
   );

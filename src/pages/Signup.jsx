@@ -7,37 +7,41 @@ import { extractErrorMessage } from "../utils/common";
 import { useSelector } from "react-redux";
 
 function Signup() {
-  const [createUser, { isLoading }] = useCreateUserMutation();
-  const navigate=useNavigate()
-  const [isPasswordMatch, setIsPasswordMatch] = useState(true);
-  const { status } = useSelector((state) => state.auth);
-  if (status=="authenticated") {
-    navigate("/")
-  }
   const [form] = Form.useForm();
-  async function onFinish(v) {
-    if (v?.pass1 !== v?.pass2) {
-      setIsPasswordMatch(false);
-    } else {
-      try {
-        await createUser({
-          name: v?.name,
-          email: v?.email,
-          password: v?.pass1,
-        }).unwrap();
-        toast.success("User creation success");
-        form.resetFields();
-      } catch (error) {
-        toast.error(extractErrorMessage(error));
-      }
-    }
+  const [isPasswordMatch, setIsPasswordMatch] = useState(true);
+  const [createUser, { isLoading }] = useCreateUserMutation();
+  const navigate = useNavigate();
+  const { status } = useSelector((state) => state.auth);
+  
+  if (status === "authenticated") {
+    navigate("/");
   }
+
+  const onFinish = async (values) => {
+    if (values?.pass1 !== values?.pass2) {
+      setIsPasswordMatch(false);
+      return;
+    }
+    
+    try {
+      await createUser({
+        name: values?.name,
+        email: values?.email,
+        password: values?.pass1,
+      }).unwrap();
+      toast.success("User registration successful");
+      form.resetFields();
+    } catch (error) {
+      toast.error(extractErrorMessage(error));
+    }
+  };
+
   return (
     <div className="h-screen w-screen flex justify-center items-center">
       <Spin spinning={isLoading} size="large">
         <Card>
           <Form
-            name="login"
+            name="signup"
             onFinish={onFinish}
             form={form}
             layout="vertical"
@@ -48,64 +52,64 @@ function Signup() {
               label="Name"
               name="name"
               rules={[
-                { required: true, message: "Please input your Name!" },
-                { min: 3, message: "At least 3 character" },
-                { max: 15, message: "Max 15 character" },
-                { type: "string", message: "Enter a valid name" },
+                { required: true, message: "Please input your name!" },
+                { min: 3, message: "At least 3 characters" },
+                { max: 15, message: "Max 15 characters" },
               ]}
             >
-              <Input placeholder="Enter your name"></Input>
+              <Input placeholder="Enter your name" />
             </Form.Item>
+            
             <Form.Item
               label="Email"
               name="email"
               rules={[
                 { required: true, message: "Please input your email!" },
-                { type: "email", message: "Enter a valid Email" },
+                { type: "email", message: "Enter a valid email" },
               ]}
             >
-              <Input placeholder="Enter your email"></Input>
+              <Input placeholder="Enter your email" />
             </Form.Item>
+            
             <Form.Item
               label="Password"
               name="pass1"
               rules={[
                 { required: true, message: "Please input your password!" },
-                { min: 6, message: "At least 6 character" },
-                { max: 6, message: "Max 6 character" },
+                { min: 6, message: "At least 6 characters" },
+                { max: 20, message: "Max 20 characters" },
               ]}
             >
               <Input.Password
                 placeholder="Enter your password"
-                onChange={() => {
-                  setIsPasswordMatch(true);
-                }}
-              ></Input.Password>
+                onChange={() => setIsPasswordMatch(true)}
+              />
             </Form.Item>
+            
             <Form.Item
-              label="Re-Password"
+              label="Confirm Password"
               name="pass2"
               rules={[
-                { required: true, message: "Please input your password!" },
-                { min: 6, message: "At least 6 character" },
-                { max: 6, message: "Max 6 character" },
+                { required: true, message: "Please confirm your password!" },
+                { min: 6, message: "At least 6 characters" },
+                { max: 20, message: "Max 20 characters" },
               ]}
             >
               <Input.Password
-                placeholder="Enter your password"
-                onChange={() => {
-                  setIsPasswordMatch(true);
-                }}
-              ></Input.Password>
+                placeholder="Re-enter your password"
+                onChange={() => setIsPasswordMatch(true)}
+              />
             </Form.Item>
-            {isPasswordMatch || (
+            
+            {!isPasswordMatch && (
               <p className="text-center text-red-400 text-md font-semibold">
-                Password did not match
+                Passwords do not match
               </p>
             )}
+            
             <Form.Item className="flex justify-center">
               <Button type="primary" htmlType="submit">
-                Submit
+                Sign Up
               </Button>
             </Form.Item>
           </Form>
