@@ -15,7 +15,6 @@ let router = createBrowserRouter([
     children: [
       {
         path: "/",
-        // Component: Home,
         element: (
           <PrivateRoute>
             <Home></Home>

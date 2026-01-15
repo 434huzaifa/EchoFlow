@@ -6,7 +6,6 @@ function PrivateRoute({ children }) {
   const { status } = useSelector((state) => state.auth);
 
 
-  // ⏳ wait for auth check
   if (status === "loading") {
     return <Spin fullscreen></Spin>;
   }

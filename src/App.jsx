@@ -1,14 +1,17 @@
 import { Toaster } from "react-hot-toast";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Outlet } from "react-router-dom";
 import { useRefreshUserMutation } from "./api/UserApi";
 import { useEffect } from "react";
 import { authChecked } from "./slice/authSlice";
 import { extractErrorMessage } from "./utils/common";
+import { initializeSocket, updateSocketAuth } from "./config/socketConfig";
 
 function App() {
   const dispatch = useDispatch();
   const [refreshUser] = useRefreshUserMutation();
+  const accessToken = useSelector((state) => state.auth.accessToken);
+
   useEffect(() => {
     const initAuth = async () => {
       try {
@@ -21,6 +24,15 @@ function App() {
 
     initAuth();
   }, []);
+
+  useEffect(() => {
+    if (accessToken) {
+      initializeSocket(accessToken);
+    } else {
+      updateSocketAuth(null);
+    }
+  }, [accessToken]);
+
   return (
     <>
       <Outlet></Outlet>

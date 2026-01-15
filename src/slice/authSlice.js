@@ -4,7 +4,7 @@ const initialState = {
   user: null,
   accessToken: null,
   refreshToken: null,
-  status: "loading", // 👈 important
+  status: "loading", 
 };
 
 const authSlice = createSlice({
