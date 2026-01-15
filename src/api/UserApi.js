@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { setCredentials } from "../slice/authSlice";
+import { logout, setCredentials } from "../slice/authSlice";
 
 export const userApi = createApi({
   reducerPath: "userApi",
@@ -74,6 +74,13 @@ export const userApi = createApi({
           url: "logout",
           body: userCred,
         }),
+        async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+          try {
+            dispatch(logout());
+          } catch (err) {
+            console.error("Logout failed", err);
+          }
+        },
       }),
     };
   },

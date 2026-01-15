@@ -1,10 +1,17 @@
-import { Button, Form, Input, Modal, Spin, Empty, Tabs } from "antd";
+import {
+  Button,
+  Form,
+  Input,
+  Modal,
+  Spin,
+  Empty,
+  Tabs,
+  Popover,
+  Avatar,
+} from "antd";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  useCreatePostMutation,
-  useUpdatePostMutation,
-} from "../api/PostApi";
+import { useCreatePostMutation, useUpdatePostMutation } from "../api/PostApi";
 import { useGetPostsQuery } from "../socketApi/SocketPostsApi";
 import PostCard from "../components/PostCard";
 import toast from "react-hot-toast";
@@ -46,7 +53,7 @@ function Home() {
   );
 
   const showModal = () => setIsModalOpen(true);
-  
+
   const handleCancel = () => {
     setIsModalOpen(false);
     setInitialValue({ title: null, body: null, postId: null });
@@ -95,21 +102,84 @@ function Home() {
     dispatch(setSortBy(v));
   }
 
-  if (isPostsLoading) return <Spin />;
-
-  const items = [
-    { key: "1", label: "Newest" },
-    { key: "2", label: "Most Liked" },
-    { key: "3", label: "Most Disliked" }
-  ];
-
+  const popOverContent = () => (
+    <div className="flex flex-col justify-center items-center gap-1">
+      <p className="font-semibold">{user?.name}</p>
+      <p className="text-sm text-gray-500">{user?.email}</p>
+      <Button onClick={handleLogout} loading={isLoggingOut} danger>
+        Logout
+      </Button>
+    </div>
+  );
   return (
-    <div className="p-5 flex gap-3 flex-col w-full h-full">
+    <div className="p-5 flex gap-3 flex-col w-full h-full min-h-screen min-w-screen my-bg">
+      <Spin fullscreen spinning={isPostsLoading} />
       <div className="flex justify-between items-center">
-        <Tabs defaultActiveKey={sortBy} items={items} onChange={tabOnchange} />
-        <Button onClick={handleLogout} loading={isLoggingOut} danger>
-          Logout
-        </Button>
+        <div className="flex items-center gap-0.5 sm:gap-2 sm:text-base text-xs">
+          <div
+            onClick={() => {
+              if (sortBy !== "1") {
+                tabOnchange("1");
+              }
+            }}
+            className={`p-2  rounded-t-lg border  border-white ${
+              sortBy == "1"
+                ? "bg-green-400 text-black hover:cursor-default hover:text-black hover:border-blue-400"
+                : "bg-none text-white hover:cursor-pointer hover:text-blue-300 hover:border-blue-400"
+            }`}
+          >
+            Newest
+          </div>
+          <div
+            onClick={() => {
+              if (sortBy !== "2") {
+                tabOnchange("2");
+              }
+            }}
+            className={`p-2  rounded-t-lg border  border-white ${
+              sortBy == "2"
+                ? "bg-green-400 text-black hover:cursor-default hover:text-black hover:border-blue-400"
+                : "bg-none text-white hover:cursor-pointer hover:text-blue-300 hover:border-blue-400"
+            }`}
+          >
+            Most Liked
+          </div>
+          <div
+            onClick={() => {
+              if (sortBy !== "3") {
+                tabOnchange("3");
+              }
+            }}
+            className={`p-2  rounded-t-lg border  border-white ${
+              sortBy == "3"
+                ? "bg-green-400 text-black hover:cursor-default hover:text-black hover:border-blue-400"
+                : "bg-none text-white hover:cursor-pointer hover:text-blue-300 hover:border-blue-400"
+            }`}
+          >
+            Most Disliked
+          </div>
+        </div>
+
+        <div className="flex flex-col-reverse sm:flex-row items-center gap-0.5 sm:gap-3">
+          <button
+            className="text-xs sm:text-base p-1 sm:p-1.5 hover:text-blue-300 hover:border-blue-400 text-white border rounded-lg"
+            onClick={showModal}
+            variant="outlined"
+            ghost
+          >
+            Create Post
+          </button>
+          <Popover content={popOverContent} arrow={true} placement="left">
+            <Avatar
+              size="large"
+              shape="square"
+              style={{ backgroundColor: "#87d068" }}
+            >
+              {user?.name?.[0] || "U"}
+            </Avatar>
+          </Popover>
+        </div>
+        {/*  */}
       </div>
 
       {data?.posts && data.posts.length > 0 ? (
@@ -131,8 +201,6 @@ function Home() {
       ) : (
         <Empty description="No posts found" />
       )}
-      
-      <Button onClick={showModal}>Create Post</Button>
 
       {/*Post Modal */}
       <Modal
@@ -177,7 +245,11 @@ function Home() {
           </Form.Item>
           <Form.Item>
             <div className="flex justify-center gap-4">
-              <Button type="primary" htmlType="submit" loading={isLoading || isUpdateLoading}>
+              <Button
+                type="primary"
+                htmlType="submit"
+                loading={isLoading || isUpdateLoading}
+              >
                 {initialValue.postId ? "Update" : "Submit"}
               </Button>
               <Button color="danger" variant="solid" onClick={handleCancel}>

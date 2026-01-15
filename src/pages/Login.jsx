@@ -1,16 +1,18 @@
-import { Button, Card, Form, Input, Spin } from "antd";
-import { useNavigate } from "react-router-dom";
+import { Button, Form, Input, Spin } from "antd";
+import { Link, useNavigate } from "react-router-dom";
 import { useLoginUserMutation } from "../api/UserApi";
 import { extractErrorMessage } from "../utils/common";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
+import GlassCard from "../components/GlassCard";
+import { IoMdMail } from "react-icons/io";
 
 function Login() {
   const [form] = Form.useForm();
   const [loginUser, { isLoading }] = useLoginUserMutation();
   const navigate = useNavigate();
   const { status } = useSelector((state) => state.auth);
-  
+
   if (status === "authenticated") {
     navigate("/");
   }
@@ -29,10 +31,17 @@ function Login() {
   };
 
   return (
-    <div className="h-screen w-screen flex justify-center items-center">
+    <div className="min-h-screen w-screen flex justify-center items-center my-bg">
       <Spin spinning={isLoading} size="large">
-        <Card>
-          <Form name="login" onFinish={onFinish} form={form} layout="vertical">
+        <GlassCard title="Login" width="w-80">
+          <Form
+            name="login"
+            onFinish={onFinish}
+            form={form}
+            layout="vertical"
+            size="large"
+            variant="underlined"
+          >
             <Form.Item
               label="Email"
               name="email"
@@ -41,9 +50,12 @@ function Login() {
                 { type: "email", message: "Please enter a valid email" },
               ]}
             >
-              <Input placeholder="Enter your email" />
+              <Input
+                placeholder="Enter your email"
+                style={{ background: "none" ,color:"white"}}
+              />
             </Form.Item>
-            
+
             <Form.Item
               label="Password"
               name="pass"
@@ -53,16 +65,28 @@ function Login() {
                 { max: 20, message: "Max 20 characters" },
               ]}
             >
-              <Input.Password placeholder="Enter your password" />
+              <Input.Password
+                placeholder="Enter your password"
+                style={{ background: "none",color:"white" }}
+              />
             </Form.Item>
-            
+
             <Form.Item className="flex justify-center">
-              <Button type="primary" htmlType="submit">
+              <Button
+                htmlType="submit"
+                variant="outlined"
+                ghost
+                style={{ background: "none" }}
+              >
                 Login
               </Button>
             </Form.Item>
           </Form>
-        </Card>
+          <p className="font-semibold text-gray-900 text-center">
+            if you don't have account then{" "}
+            <Link className="text-blue-500 hover:underline" to="/signup">Signup</Link>
+          </p>
+        </GlassCard>
       </Spin>
     </div>
   );

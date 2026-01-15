@@ -110,10 +110,10 @@ function PostCard({ post, setInitialValue, setIsModalOpen }) {
   const isAuthor = post?.author?._id === user?.id;
 
   return (
-    <Card>
-      <p className="text-2xl font-bold">{post.title}</p>
-      <p className="text-xl">{post.body}</p>
-      <p className="text-xs text-gray-500">
+    <Card style={{background:"#1B211A",border:"none"}}>
+      <p className="text-2xl font-bold text-[#628141]">{post.title}</p>
+      <p className="text-xl text-[#8BAE66]">{post.body}</p>
+      <p className="text-xs text-[#EBD5AB]">
         {isAuthor ? "By Me" : `By ${post.author.name}`}
       </p>
       
@@ -123,17 +123,17 @@ function PostCard({ post, setInitialValue, setIsModalOpen }) {
         <div className="flex gap-4">
           <Spin spinning={isLikeLoading}>
             <div
-              className="flex gap-0.5 items-center justify-center hover:cursor-pointer"
+              className="flex gap-0.5 text-[#628141] items-center justify-center hover:cursor-pointer"
               onClick={handleLike}
             >
-              <span>{post.likesCount}</span>
+              <span >{post.likesCount}</span>
               {userLiked ? <BiSolidLike /> : <BiLike />}
             </div>
           </Spin>
           
           <Spin spinning={isDisLikeLoading}>
             <div
-              className="flex gap-0.5 items-center justify-center hover:cursor-pointer"
+              className="flex gap-0.5 items-center justify-center hover:cursor-pointer text-[#9E2A3A]"
               onClick={handleDislike}
             >
               <span>{post.dislikesCount}</span>
@@ -142,7 +142,7 @@ function PostCard({ post, setInitialValue, setIsModalOpen }) {
           </Spin>
           
           <div
-            className="flex gap-0.5 items-center justify-center text-lg hover:cursor-pointer"
+            className="flex gap-0.5 items-center justify-center text-lg hover:cursor-pointer text-[#5A9690]"
             onClick={toggleComments}
           >
             <span>{post?.commentsCount}</span>
@@ -158,7 +158,7 @@ function PostCard({ post, setInitialValue, setIsModalOpen }) {
         {isAuthor && (
           <div className="flex gap-4">
             <BiEdit
-              className="hover:cursor-pointer hover:border-b"
+              className="hover:cursor-pointer hover:border-b text-amber-600"
               onClick={handleEdit}
             />
             <Popconfirm
@@ -167,7 +167,7 @@ function PostCard({ post, setInitialValue, setIsModalOpen }) {
               onConfirm={handleDelete}
               okButtonProps={{ loading: isDeleteLoading }}
             >
-              <MdDelete className="hover:cursor-pointer hover:border-b" />
+              <MdDelete className="hover:cursor-pointer hover:border-b text-red-500" />
             </Popconfirm>
           </div>
         )}
@@ -181,6 +181,7 @@ function PostCard({ post, setInitialValue, setIsModalOpen }) {
           name="comment_form"
           onFinish={onCommentSubmit}
           form={form}
+          variant="underlined"
           className="flex flex-row gap-3"
         >
           <Form.Item
@@ -188,7 +189,7 @@ function PostCard({ post, setInitialValue, setIsModalOpen }) {
             rules={[{ required: true, message: "Comment can't be empty" }]}
             className="flex-1"
           >
-            <Input placeholder="Write your thoughts......" />
+            <Input placeholder="Write your thoughts......" style={{background:"none",}} className=""/>
           </Form.Item>
           <Form.Item>
             <Button type="primary" htmlType="submit">

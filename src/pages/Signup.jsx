@@ -1,10 +1,11 @@
-import { Button, Card, Form, Input, Spin } from "antd";
-import { useNavigate } from "react-router-dom";
+import { Button, Form, Input, Spin } from "antd";
+import { Link, useNavigate } from "react-router-dom";
 import { useCreateUserMutation } from "../api/UserApi";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { extractErrorMessage } from "../utils/common";
 import { useSelector } from "react-redux";
+import GlassCard from "../components/GlassCard";
 
 function Signup() {
   const [form] = Form.useForm();
@@ -12,7 +13,7 @@ function Signup() {
   const [createUser, { isLoading }] = useCreateUserMutation();
   const navigate = useNavigate();
   const { status } = useSelector((state) => state.auth);
-  
+
   if (status === "authenticated") {
     navigate("/");
   }
@@ -22,7 +23,7 @@ function Signup() {
       setIsPasswordMatch(false);
       return;
     }
-    
+
     try {
       await createUser({
         name: values?.name,
@@ -37,13 +38,14 @@ function Signup() {
   };
 
   return (
-    <div className="h-screen w-screen flex justify-center items-center">
+    <div className="min-h-screen w-screen flex justify-center items-center my-bg">
       <Spin spinning={isLoading} size="large">
-        <Card>
+        <GlassCard title="Sign Up" width="w-96">
           <Form
             name="signup"
             onFinish={onFinish}
             form={form}
+            variant="underlined"
             layout="vertical"
             size="large"
             disabled={isLoading}
@@ -57,9 +59,12 @@ function Signup() {
                 { max: 15, message: "Max 15 characters" },
               ]}
             >
-              <Input placeholder="Enter your name" />
+              <Input
+                placeholder="Enter your name"
+                style={{ background: "none", color: "white" }}
+              />
             </Form.Item>
-            
+
             <Form.Item
               label="Email"
               name="email"
@@ -68,9 +73,12 @@ function Signup() {
                 { type: "email", message: "Enter a valid email" },
               ]}
             >
-              <Input placeholder="Enter your email" />
+              <Input
+                placeholder="Enter your email"
+                style={{ background: "none", color: "white" }}
+              />
             </Form.Item>
-            
+
             <Form.Item
               label="Password"
               name="pass1"
@@ -83,9 +91,10 @@ function Signup() {
               <Input.Password
                 placeholder="Enter your password"
                 onChange={() => setIsPasswordMatch(true)}
+                style={{ background: "none", color: "white" }}
               />
             </Form.Item>
-            
+
             <Form.Item
               label="Confirm Password"
               name="pass2"
@@ -98,22 +107,34 @@ function Signup() {
               <Input.Password
                 placeholder="Re-enter your password"
                 onChange={() => setIsPasswordMatch(true)}
+                style={{ background: "none", color: "white" }}
               />
             </Form.Item>
-            
+
             {!isPasswordMatch && (
               <p className="text-center text-red-400 text-md font-semibold">
                 Passwords do not match
               </p>
             )}
-            
+
             <Form.Item className="flex justify-center">
-              <Button type="primary" htmlType="submit">
+              <Button
+                htmlType="submit"
+                variant="outlined"
+                ghost
+                style={{ background: "none" }}
+              >
                 Sign Up
               </Button>
             </Form.Item>
           </Form>
-        </Card>
+          <p className="font-semibold text-gray-900 text-center">
+            if you have account then{" "}
+            <Link className="text-blue-500 hover:underline" to="/login">
+              Login
+            </Link>
+          </p>
+        </GlassCard>
       </Spin>
     </div>
   );

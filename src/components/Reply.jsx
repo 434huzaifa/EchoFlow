@@ -66,7 +66,6 @@ function Reply({ reply, refetchComments }) {
         
         <div className="flex-1">
           {editingReplyId === reply._id ? (
-            // Edit Mode
             <div className="flex gap-2">
               <input
                 type="text"
@@ -94,8 +93,8 @@ function Reply({ reply, refetchComments }) {
             </div>
           ) : (
             <div>
-              <p className="font-semibold text-sm">{reply?.author?.name}</p>
-              <p className="text-sm">{reply?.text}</p>
+              <p className="font-semibold text-sm text-[#715A5A]">{reply?.author?.name}</p>
+              <p className="text-sm text-[#E0D9D9]">{reply?.text}</p>
               
               {isReplyAuthor && (
                 <div className="flex gap-4 items-center mt-2 text-sm">

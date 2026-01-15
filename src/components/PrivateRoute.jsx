@@ -6,7 +6,11 @@ function PrivateRoute({ children }) {
   const { status } = useSelector((state) => state.auth);
 
   if (status === "loading") {
-    return <Spin fullscreen></Spin>;
+    return (
+      <div className="h-screen w-screen">
+        <Spin fullscreen></Spin>
+      </div>
+    );
   }
 
   if (status === "unauthenticated") {

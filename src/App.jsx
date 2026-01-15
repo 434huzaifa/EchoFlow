@@ -34,10 +34,10 @@ function App() {
   }, [accessToken]);
 
   return (
-    <>
+    <div className="my-bg">
       <Outlet></Outlet>
       <Toaster position="bottom-left" />
-    </>
+    </div>
   );
 }
 

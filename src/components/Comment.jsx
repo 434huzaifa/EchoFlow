@@ -46,7 +46,6 @@ function Comment({ comment, postId, refetchComments }) {
 
   const popOverContent = () => (
     <>
-      <p className="font-semibold">{comment?.author?.name}</p>
       <p className="text-sm text-gray-500">{comment?.author?.email}</p>
     </>
   );
@@ -122,13 +121,13 @@ function Comment({ comment, postId, refetchComments }) {
         <div className="flex gap-4 items-start">
           <div>
             <Popover content={popOverContent} arrow={true} placement="left">
-              <Avatar size="large" shape="square">
+              <Avatar size="large" shape="square" style={{ backgroundColor: "#87d068" }}>
                 {comment?.author?.name?.[0] || "U"}
               </Avatar>
             </Popover>
           </div>
           
-          {/* Comment Body */}
+          {/*  Body */}
           <div className="flex-1">
             {editingCommentId === comment._id ? (
               // Toggle between edit and normal view
@@ -159,16 +158,16 @@ function Comment({ comment, postId, refetchComments }) {
               </div>
             ) : (
               <div>
-                <p className="font-semibold text-sm">{comment?.author?.name}</p>
-                <p className="text-sm">{comment?.text}</p>
+                <p className="font-semibold text-sm text-[#F78D60]">{comment?.author?.name}</p>
+                <p className="text-sm text-[#D2C1B6]">{comment?.text}</p>
               </div>
             )}
           </div>
         </div>
 
-        {/* Comment Actions */}
+        {/*  Actions */}
         <div className="pl-16 flex text-gray-600 justify-between mt-2">
-          {/* Show/Hide Replies Button */}
+          {/*  Replies Button */}
           <div>
             {replies.length > 0 && (
               <div className="flex items-center gap-0.5 hover:cursor-pointer hover:text-blue-600 hover:border-b">
@@ -182,9 +181,7 @@ function Comment({ comment, postId, refetchComments }) {
             )}
           </div>
           
-          {/* Action Buttons */}
           <div className="flex gap-3 items-center">
-            {/* Like Button */}
             <Spin spinning={isLikingComment}>
               <div
                 className="flex gap-0.5 items-center hover:cursor-pointer hover:text-blue-600"
@@ -195,7 +192,6 @@ function Comment({ comment, postId, refetchComments }) {
               </div>
             </Spin>
             
-            {/* Dislike Button */}
             <Spin spinning={isDislikingComment}>
               <div
                 className="flex gap-0.5 items-center hover:cursor-pointer hover:text-red-600"
@@ -206,13 +202,12 @@ function Comment({ comment, postId, refetchComments }) {
               </div>
             </Spin>
             
-            {/* Reply Button */}
             <MdOutlineTurnRight
               className="hover:cursor-pointer hover:text-green-600"
               onClick={toggleReplyInput}
             />
             
-            {/* Edit & Delete (only for author) */}
+            
             {isCommentAuthor && (
               <>
                 <BiEdit
@@ -231,13 +226,13 @@ function Comment({ comment, postId, refetchComments }) {
           </div>
         </div>
 
-        {/* Reply Input Form */}
         {replyInput && (
-          <div className="pl-16 mt-2">
+          <div className="pl-0 sm:pl-12 mt-2">
             <Form
               name="replay_form"
               onFinish={onReplySubmit}
               form={form}
+              variant="underlined"
               className="flex flex-row gap-3"
             >
               <Form.Item
@@ -245,7 +240,7 @@ function Comment({ comment, postId, refetchComments }) {
                 rules={[{ required: true, message: "Reply can't be empty" }]}
                 className="flex-1"
               >
-                <Input placeholder="Write your reply......" />
+                <Input placeholder="Write your reply......" style={{background:"none"}}/>
               </Form.Item>
               <Form.Item>
                 <Spin spinning={isCreatingReply}>
@@ -265,9 +260,8 @@ function Comment({ comment, postId, refetchComments }) {
           </div>
         )}
 
-        {/* Replies List */}
         {showReply && replies.length > 0 && (
-          <div className="pl-16 mt-4 flex flex-col gap-3 border-l border-gray-200">
+          <div className="pl-0 sm:pl-4 mt-4 flex flex-col gap-3 border-l border-gray-200">
             {replies.map((reply) => (
               <Reply
                 key={reply._id}
