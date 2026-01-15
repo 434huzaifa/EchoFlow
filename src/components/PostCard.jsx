@@ -30,7 +30,7 @@ import { extractErrorMessage } from "../utils/common";
 import { useSelector } from "react-redux";
 import { useCreateCommentMutation } from "../api/CommentApi";
 
-function PostCard({ post, setInitialValue, setIsModalOpen }) {
+function PostCard({ post, setInitialValue, setIsModalOpen, refetchPosts }) {
   const [form] = Form.useForm();
   const [showComment, setShowComment] = useState(false);
   const { user } = useSelector((state) => state.auth);
@@ -60,6 +60,13 @@ function PostCard({ post, setInitialValue, setIsModalOpen }) {
         post: post?._id,
       }).unwrap();
       form.resetFields();
+      // Refresh posts to update commentsCount and refresh comments list
+      if (refetchPosts) {
+        await refetchPosts();
+      }
+      if (showComment && refetchComments) {
+        await refetchComments();
+      }
       toast.success("Comment added successfully");
     } catch (error) {
       toast.error(extractErrorMessage(error));
@@ -177,7 +184,8 @@ function PostCard({ post, setInitialValue, setIsModalOpen }) {
       
       {/* Comment Input hidden if already commented*/}
       {!post?.hasMyComment && (
-        <Form
+        <Spin spinning={isCommentLoading}>
+          <Form
           name="comment_form"
           onFinish={onCommentSubmit}
           form={form}
@@ -197,6 +205,7 @@ function PostCard({ post, setInitialValue, setIsModalOpen }) {
             </Button>
           </Form.Item>
         </Form>
+        </Spin>
       )}
 
       {showComment && (

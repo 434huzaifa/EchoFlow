@@ -46,7 +46,13 @@ export const commentsApi = createApi({
                 (comment) => comment._id === response.data._id
               );
               if (commentIndex !== -1) {
-                draft[commentIndex] = response.data;
+                const existing = draft[commentIndex];
+                const incoming = response.data;
+                draft[commentIndex] = {
+                  ...existing,
+                  ...incoming,
+                  replies: incoming.replies ?? existing.replies,
+                };
               }
             });
           };
@@ -67,7 +73,13 @@ export const commentsApi = createApi({
                 (comment) => comment._id === response.data._id
               );
               if (commentIndex !== -1) {
-                draft[commentIndex] = response.data;
+                const existing = draft[commentIndex];
+                const incoming = response.data;
+                draft[commentIndex] = {
+                  ...existing,
+                  ...incoming,
+                  replies: incoming.replies ?? existing.replies,
+                };
               }
             });
           };

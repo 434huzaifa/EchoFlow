@@ -43,6 +43,7 @@ function Home() {
     data,
     isLoading: isPostsLoading,
     isFetching,
+    refetch: refetchPosts,
   } = useGetPostsQuery(
     {
       cursor,
@@ -190,6 +191,7 @@ function Home() {
               post={post}
               setInitialValue={setInitialValue}
               setIsModalOpen={setIsModalOpen}
+              refetchPosts={refetchPosts}
             />
           ))}
           {data.nextCursor && (
